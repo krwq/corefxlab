@@ -1,150 +1,210 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
-using System;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace System.Text.Utf8
 {
-    public struct Utf8String : IEquatable<Utf8String>, IComparable<Utf8String>
+    public struct Utf8String // TODO: : IEnumerable<CodePoint>
     {
-        static readonly Utf8String s_empty = new Utf8String(new byte[0]);
+        const uint mask_0111_1111 = 0x7F;
+        const uint mask_0011_1111 = 0x3F;
+        const uint mask_0001_1111 = 0x1F;
+        const uint mask_0000_1111 = 0x0F;
+        const uint mask_0000_0111 = 0x07;
+        const uint mask_1000_0000 = 0x80;
+        const uint mask_1100_0000 = 0xC0;
+        const uint mask_1110_0000 = 0xE0;
+        const uint mask_1111_0000 = 0xF0;
+        const uint mask_1111_1000 = 0xF8;
 
-        byte[] _array;
-        unsafe byte* _buffer;
-        int _length;
+        public TextBuffer Buffer { get; set; }
+
+        public Utf8String(TextBuffer text)
+        {
+            Buffer = text;
+        }
+
+        public Utf8String(byte[] buffer)
+        {
+            Buffer = new TextBuffer(buffer);
+        }
+
+        public static explicit operator Utf8String(string builtinString)
+        {
+            return new Utf8String(System.Text.Encoding.UTF8.GetBytes(builtinString));
+        }
+
+        public override string ToString()
+        {
+            return System.Text.Encoding.UTF8.GetString(Buffer.Buffer, (int)Buffer.Index, (int)Buffer.Length);
+        }
 
         [CLSCompliant(false)]
-        public unsafe Utf8String(byte* utf8, int length)
+        public static unsafe byte* ReadCodePointByte(byte* index, ref uint codePoint)
         {
-            _array = null;
-            _buffer = utf8;
-            _length = length;
+            codePoint <<= 6;
+            uint current = *index++;
+            if ((current & mask_1100_0000) != mask_1000_0000)
+                throw new ArgumentOutOfRangeException("index");
+
+            codePoint |= mask_0011_1111 & current;
+            return index;
         }
 
-        public Utf8String(byte[] utf8)
+        [CLSCompliant(false)]
+        public static unsafe byte* ReadCodePointFromBuffer(byte* index, out uint codePoint)
         {
-            unsafe
+            uint first = *index++;
+
+            if ((first & mask_1111_1000) == mask_1111_0000)
             {
-                _buffer = null;
-            }
-            _length = utf8.Length;
-            _array = utf8;
-        }
+                codePoint = first & mask_0000_0111;
+                index = ReadCodePointByte(index, ref codePoint);
+                index = ReadCodePointByte(index, ref codePoint);
+                index = ReadCodePointByte(index, ref codePoint);
 
-        public Utf8String(string utf16) : this(Encoding.UTF8.GetBytes(utf16))
-        {
-        }
-
-        public static Utf8String Empty
-        {
-            get { return s_empty; }
-        }
-
-        public int Length { get { return _length; } }
-
-        public int CompareTo(Utf8String other) { throw new NotImplementedException(); }
-
-        public bool Equals(Utf8String other)
-        {
-            if (Length != other.Length)
-            {
-                return false;
+                return index;
             }
 
-            unsafe
+            if ((first & mask_1111_0000) == mask_1110_0000)
             {
-                if (_buffer != null || other._buffer != null)
+                codePoint = first & mask_0000_1111;
+                index = ReadCodePointByte(index, ref codePoint);
+                index = ReadCodePointByte(index, ref codePoint);
+
+                return index;
+            }
+
+            if ((first & mask_1110_0000) == mask_1100_0000)
+            {
+                codePoint = first & mask_0001_1111;
+                index = ReadCodePointByte(index, ref codePoint);
+
+                return index;
+            }
+
+            if ((first & mask_1000_0000) == 0)
+            {
+                codePoint = first & mask_0111_1111;
+
+                return index;
+            }
+
+            throw new Exception("InternalError");
+        }
+
+        private static unsafe byte* ReadNextCharacterChecked(byte* start, byte* end, out char characterOrHighSurrogate, out char lowSurrogate)
+        {
+            byte* index = start;
+            if (index < end)
+            {
+                if ((end - index) < 4)
                 {
+                    int size = Utf8CodeUnits.GetNumberOfEncodedCodeUnitsFromFirstCodeUnit(*index);
+                    if (size == -1)
+                        throw new Exception("Illegal UTF8 byte.");
+                    if (index + size >= end)
+                        throw new Exception("InternalError");
+                }
+
+                uint codePoint;
+                index = ReadCodePointFromBuffer(index, out codePoint);
+
+                if (codePoint < 0x010000)
+                {
+                    characterOrHighSurrogate = (char)codePoint;
+                    lowSurrogate = (char)0;
+                    return index;
+                }
+                else 
+                {
+                    // code point needs to be represented as surrogate
+                    uint val = (codePoint - 0x010000) & 0x0FFFFF;
+
+                    characterOrHighSurrogate = (char)(0xD800 + (val >> 10));
+                    lowSurrogate = (char)(0xDC00 + (val & 0x3FF));
+                }
+            }
+
+            characterOrHighSurrogate = (char)0;
+            lowSurrogate = (char)0;
+            return null;
+        }
+
+        public unsafe long CalculateNumberOfCodePointsUnchecked()
+        {
+            long ret = 0;
+            fixed (byte* pinnedBuffer = Buffer.Buffer)
+            {
+                byte* index = pinnedBuffer + Buffer.Index;
+                byte* end = index + Buffer.Length;
+
+                while (index < end)
+                {
+                    ret++;
+                    index += Utf8CodeUnits.GetNumberOfEncodedCodeUnitsFromFirstCodeUnit(*index);
+                }
+            }
+
+            return ret;
+        }
+
+        public unsafe long CalculateNumberOfCharacters()
+        {
+            long ret = 0;
+            fixed (byte* pinnedBuffer = Buffer.Buffer)
+            {
+                byte* index = pinnedBuffer + Buffer.Index;
+                byte* end = index + Buffer.Length;
+
+                while (index < end)
+                {
+                    ret++;
                     throw new NotImplementedException();
+                //    CodePoint cp;
+                //    index = Utf8CodeUnits.DecodeCodePoint(index, end, out cp);
+
+                //    // TODO: Utf16Encoder.DoesCodePointNeedSurrogateCharactersForItsRepresentation?
+                //    if (cp.Value >= 10000)
+                //        ret++;
                 }
             }
 
-            for (int i = 0; i < _array.Length; i++)
+            return ret;
+        }
+
+        public unsafe char[] ConvertToUtf16Characters()
+        {
+            long len = CalculateNumberOfCharacters();
+            char[] ret = new char[len];
+
+            fixed (byte* pinnedBuffer = Buffer.Buffer)
             {
-                if (_array[i] != other._array[i])
+                byte* index = pinnedBuffer + Buffer.Index;
+                byte* end = index + Buffer.Length;
+
+                long idx = 0;
+                while (true)
                 {
-                    return false;
-                }
-            }
-            return true;
-        }
+                    char high, low;
+                    index = ReadNextCharacterChecked(index, end, out high, out low);
 
-        public bool Equals(string other) { throw new NotImplementedException(); }
+                    if (index == null)
+                        return ret;
 
-        public int CompareTo(string other) { throw new NotImplementedException(); }
-
-        // operators
-        public static bool operator==(Utf8String left, Utf8String right) {
-            return left.Equals(right);
-        }
-        public static bool operator!=(Utf8String left, Utf8String right)
-        {
-            return !left.Equals(right);
-        }
-        public static bool operator ==(Utf8String left, string right)
-        {
-            return left.Equals(right);
-        }
-        public static bool operator !=(Utf8String left, string right)
-        {
-            return !left.Equals(right);
-        }
-        public static bool operator==(string left, Utf8String right)
-        {
-            return right.Equals(left);
-        }
-        public static bool operator !=(string left, Utf8String right)
-        {
-            return !right.Equals(left);
-        }
-
-        public byte[] CopyBytes() {
-            unsafe
-            {
-                if (_buffer != null) { throw new NotImplementedException(); }
-            }
-
-            var copy = new byte[_array.Length];
-            _array.CopyTo(copy, 0);
-            return copy;
-        }
-
-        public override string ToString() {
-            unsafe
-            {
-                if (_buffer != null)
-                {
-                    // TODO: this should be done without allocating the array
-                    var array = new byte[_length];
-                    for(int i=0; i<_length; i++)
+                    if (low != 0)
                     {
-                        array[i] = _buffer[i];
+                        ret[idx++] = high;
+                        ret[idx++] = low;
                     }
-                    Encoding.UTF8.GetString(array, 0, _length);
+                    else
+                    {
+                        ret[idx++] = high;
+                    }
                 }
             }
-            return Encoding.UTF8.GetString(_array, 0, _length);
         }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is Utf8String)
-            {
-                return Equals((Utf8String)obj);
-            }
-            else if (obj is string)
-            {
-                return Equals((string)obj);
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public override int GetHashCode() { throw new NotImplementedException(); }
     }
 }
-
-
-

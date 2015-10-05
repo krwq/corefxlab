@@ -9,7 +9,7 @@ namespace System.Text.Utf8.Tests
         {
             byte[] utf8Bytes = Encoding.UTF8.GetBytes("1258");
             var utf8String = new Utf8String(utf8Bytes);
-            Assert.Equal(4, utf8Bytes.Length);
+            Assert.Equal(4, utf8String.CalculateNumberOfCodePointsUnchecked());
         }
 
         [Fact]
