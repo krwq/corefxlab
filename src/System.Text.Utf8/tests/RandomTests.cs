@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace System.Text.Utf8.Tests
 {
@@ -13,7 +14,7 @@ namespace System.Text.Utf8.Tests
         [InlineData("a\uABEE")]
         [InlineData("a\uABEEa")]
         [InlineData("a\uABEE\uABCDa")]
-        public unsafe void Length(string s)
+        public void Length(string s)
         {
             Assert.Equal(s.Length, (new Utf8String(Encoding.UTF8.GetBytes(s))).Count());
         }
@@ -27,13 +28,36 @@ namespace System.Text.Utf8.Tests
         [InlineData("a\uABEE")]
         [InlineData("a\uABEEa")]
         [InlineData("a\uABEE\uABCDa")]
-        public unsafe void ToStringTest(string s)
+        public void ToStringTest(string s)
         {
-            Assert.Equal(s, (new Utf8String(Encoding.UTF8.GetBytes(s))).ToString());
+            var utf8string = new Utf8String(Encoding.UTF8.GetBytes(s));
+            Assert.Equal(s, utf8string.ToString());
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("1258")]
+        [InlineData("1258Hello")]
+        [InlineData("\uABCD")]
+        [InlineData("\uABEE")]
+        [InlineData("a\uABEE")]
+        [InlineData("a\uABEEa")]
+        [InlineData("a\uABEE\uABCDa")]
+        public void CodePointValidation(string s)
+        {
+            var utf8string = new Utf8String(Encoding.UTF8.GetBytes(s));
+            IEnumerator<UnicodeCodePoint> codePoints = utf8string.GetEnumerator();
+            for (int i = 0; i < s.Length; i++)
+            {
+                Assert.True(codePoints.MoveNext());
+                Assert.Equal((uint)s[i], (uint)codePoints.Current);
+            }
+
+            Assert.False(codePoints.MoveNext());
         }
 
         [Fact]
-        public unsafe void Utf8EncodedCodePointFromChar0()
+        public void Utf8EncodedCodePointFromChar0()
         {
             Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u0000');
             Assert.Equal(1, ecp.Length);
@@ -41,7 +65,7 @@ namespace System.Text.Utf8.Tests
         }
 
         [Fact]
-        public unsafe void Utf8EncodedCodePointFromChar1()
+        public void Utf8EncodedCodePointFromChar1()
         {
             Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u007F');
             Assert.Equal(1, ecp.Length);
@@ -49,7 +73,7 @@ namespace System.Text.Utf8.Tests
         }
 
         [Fact]
-        public unsafe void Utf8EncodedCodePointFromChar2()
+        public void Utf8EncodedCodePointFromChar2()
         {
             Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u0080');
             Assert.Equal(2, ecp.Length);
@@ -58,7 +82,7 @@ namespace System.Text.Utf8.Tests
         }
 
         [Fact]
-        public unsafe void Utf8EncodedCodePointFromChar3()
+        public void Utf8EncodedCodePointFromChar3()
         {
             Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u01ED');
             Assert.Equal(2, ecp.Length);
@@ -67,7 +91,7 @@ namespace System.Text.Utf8.Tests
         }
 
         [Fact]
-        public unsafe void Utf8EncodedCodePointFromChar4()
+        public void Utf8EncodedCodePointFromChar4()
         {
             Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u07FF');
             Assert.Equal(2, ecp.Length);
@@ -76,7 +100,7 @@ namespace System.Text.Utf8.Tests
         }
 
         [Fact]
-        public unsafe void Utf8EncodedCodePointFromChar5()
+        public void Utf8EncodedCodePointFromChar5()
         {
             Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u0800');
             Assert.Equal(3, ecp.Length);
@@ -86,7 +110,7 @@ namespace System.Text.Utf8.Tests
         }
 
         [Fact]
-        public unsafe void Utf8EncodedCodePointFromChar6()
+        public void Utf8EncodedCodePointFromChar6()
         {
             Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\u1FA9');
             Assert.Equal(3, ecp.Length);
@@ -96,7 +120,7 @@ namespace System.Text.Utf8.Tests
         }
 
         [Fact]
-        public unsafe void Utf8EncodedCodePointFromChar7()
+        public void Utf8EncodedCodePointFromChar7()
         {
             Utf8EncodedCodePoint ecp = new Utf8EncodedCodePoint('\uFFFF');
             Assert.Equal(3, ecp.Length);
