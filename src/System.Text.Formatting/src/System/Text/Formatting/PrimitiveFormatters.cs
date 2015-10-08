@@ -157,7 +157,17 @@ namespace System.Text.Formatting
                     }
                     else
                     {
-                        var encoded = new Utf8EncodedCodePoint(c);
+                        Utf8EncodedCodePoint encoded;
+                        if (!char.IsSurrogate(c))
+                            encoded = new Utf8EncodedCodePoint(c);
+                        else
+                        {
+                            if (++i >= value.Length)
+                                throw new ArgumentException("value", "Invalid surrogate pair.");
+                            char lowSurrogate = value[i];
+                            encoded = new Utf8EncodedCodePoint(c, lowSurrogate);
+                        }
+                            
 
                         if (bytesWritten + encoded.Length > avaliableBytes)
                         {

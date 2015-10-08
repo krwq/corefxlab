@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace System {
 
-    public unsafe struct ByteSpan {
+    public unsafe struct ByteSpan : IEquatable<ByteSpan> {
         internal byte* _data;
         internal int _length;
 
@@ -99,6 +99,11 @@ namespace System {
             byte[] array = new byte[_length];
             Marshal.Copy((IntPtr)UnsafeBuffer, array, 0, _length);
             return array;
+        }
+        
+        public bool Equals(ByteSpan buffer)
+        {
+            return BufferInternal.MemoryEqual(_data, _length, buffer._data, buffer._length);
         }
     }
 }

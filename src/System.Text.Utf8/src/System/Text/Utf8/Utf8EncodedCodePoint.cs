@@ -10,15 +10,15 @@ namespace System.Text.Utf8
     {
         // TODO: .ctor(Utf16LittleEndianEncodedCodePoint)
 
-        public unsafe Utf8EncodedCodePoint(ByteSpan buffer) : this()
-        {
-            fixed (byte* encodedData = &_byte0)
-            {
-                if (!buffer.TryCopyTo(encodedData, 4))
-                    throw new ArgumentException("buffer");
-                _length = buffer.Length;
-            }
-        }
+        //public unsafe Utf8EncodedCodePoint(ByteSpan buffer) : this()
+        //{
+        //    fixed (byte* encodedData = &_byte0)
+        //    {
+        //        if (!buffer.TryCopyTo(encodedData, 4))
+        //            throw new ArgumentException("buffer");
+        //        _length = buffer.Length;
+        //    }
+        //}
 
         public unsafe Utf8EncodedCodePoint(char character) : this()
         {
@@ -34,6 +34,21 @@ namespace System.Text.Utf8
                 {
                     // TODO: Change exception type
                     throw new Exception("Internal error: this should never happen as codePoint is within acceptable range and is not surrogate");
+                }
+            }
+        }
+
+        public unsafe Utf8EncodedCodePoint(char highSurrogate, char lowSurrogate) : this()
+        {
+            UnicodeCodePoint codePoint = (UnicodeCodePoint)(uint)char.ConvertToUtf32(highSurrogate, lowSurrogate);
+
+            fixed (byte* encodedData = &_byte0)
+            {
+                ByteSpan buffer = new ByteSpan(encodedData, 4);
+                if (!Utf8Encoder.TryEncodeCodePoint(codePoint, buffer, out _length))
+                {
+                    // TODO: Change exception type
+                    throw new Exception("Internal error: this should never happen as codePoint should be within acceptable range");
                 }
             }
         }

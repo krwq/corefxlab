@@ -29,7 +29,6 @@
   <ItemGroup>
     <Compile Include="System\Text\SpecConstants.cs" />
     <Compile Include="System\Text\UnicodeCodePoint.cs" />
-    <Compile Include="System\Text\TextBuffer.cs" />
     <Compile Include="System\Text\Utf16\Utf16LittleEndianEncoder.cs" />
     <Compile Include="System\Text\Utf16\Utf16LittleEndianEncodedCodePoint.cs" />
     <Compile Include="System\Text\Utf8\Utf8EncodedCodePoint.cs" />

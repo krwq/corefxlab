@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace System.Text.Utf8
 {
-    public struct Utf8String : IEnumerable<UnicodeCodePoint>//, IEquatable<Utf8String>, IComparable<Utf8String> // TODO:
+    public struct Utf8String : IEnumerable<UnicodeCodePoint>, IEquatable<Utf8String>// TODO:, IComparable<Utf8String> 
+                              // , IEnumerator<UnicodeCodePoint> // TODO: fix it when we get Span<byte> runtime support
     {
         private ByteSpan _buffer;
 
@@ -123,6 +124,39 @@ namespace System.Text.Utf8
                 }
             }
             return new string(characters);
+        }
+
+        public unsafe bool Equals(Utf8String other)
+        {
+            if (_bytes == null && other._bytes == null)
+            {
+                return _buffer.Equals(other._buffer);
+            }
+            else if (_bytes != null && other._bytes != null)
+            {
+                fixed (byte* pinnedBytes = _bytes) fixed (byte* pinnedOthersBytes = other._bytes)
+                {
+                    ByteSpan b1 = new ByteSpan(pinnedBytes + _index, _length);
+                    ByteSpan b2 = new ByteSpan(pinnedOthersBytes + other._index, other._length);
+                    return b1.Equals(b2);
+                }
+            }
+            else if (_bytes != null && other._bytes == null)
+            {
+                fixed (byte* pinnedBytes = _bytes) fixed (byte* pinnedOthersBytes = other._bytes)
+                {
+                    ByteSpan b1 = new ByteSpan(pinnedBytes + _index, _length);
+                    return b1.Equals(other._buffer);
+                }
+            }
+            else // if (_bytes == null && other._bytes != null)
+            {
+                fixed (byte* pinnedOthersBytes = other._bytes)
+                {
+                    ByteSpan b2 = new ByteSpan(pinnedOthersBytes + other._index, other._length);
+                    return other._buffer.Equals(b2);
+                }
+            }
         }
     }
 }
