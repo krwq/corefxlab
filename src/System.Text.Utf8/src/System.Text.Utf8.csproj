@@ -22,16 +22,22 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
-    <None Include="project.json" />
+    <ProjectReference Include="..\..\System.Buffers\src\System.Buffers.csproj">
+      <Name>System.Buffers</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="System\Text\CodePoint.cs" />
-    <Compile Include="System\Text\EncodedString.BuiltinString.cs" />
-    <Compile Include="System\Text\EncodedString.cs" />
-    <Compile Include="System\Text\EncodedString.Utf8.cs" />
+    <Compile Include="System\Text\SpecConstants.cs" />
+    <Compile Include="System\Text\UnicodeCodePoint.cs" />
     <Compile Include="System\Text\TextBuffer.cs" />
-    <Compile Include="System\Text\Utf8\Utf8CodeUnits.cs" />
+    <Compile Include="System\Text\Utf16\Utf16LittleEndianEncoder.cs" />
+    <Compile Include="System\Text\Utf16\Utf16LittleEndianEncodedCodePoint.cs" />
+    <Compile Include="System\Text\Utf8\Utf8EncodedCodePoint.cs" />
+    <Compile Include="System\Text\Utf8\Utf8Encoder.cs" />
     <Compile Include="System\Text\Utf8\Utf8String.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="project.json" />
   </ItemGroup>
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" />
 </Project>

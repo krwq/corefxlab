@@ -43,8 +43,35 @@ namespace System {
         [CLSCompliant(false)]
         public void Set(byte* value, int valueLength)
         {
-            Precondition.Require(valueLength <= Length);
+            throw new NotSupportedException("remove me, use TrySet instead");
+            //Precondition.Require(valueLength <= Length);
+            //BufferInternal.MemoryCopy(value, _data, _length, valueLength);
+        }
+
+        [CLSCompliant(false)]
+        public bool TrySet(byte* value, int valueLength)
+        {
+            if (valueLength > Length)
+                return false;
             BufferInternal.MemoryCopy(value, _data, _length, valueLength);
+            return true;
+        }
+
+        [CLSCompliant(false)]
+        public bool TryCopyTo(byte* value, int valueLength)
+        {
+            if (Length > valueLength)
+                return false;
+            BufferInternal.MemoryCopy(_data, value, valueLength, _length);
+            return true;
+        }
+
+        public bool TryCopyTo(ByteSpan buffer)
+        {
+            if (Length > buffer.Length)
+                return false;
+            BufferInternal.MemoryCopy(UnsafeBuffer, buffer.UnsafeBuffer, buffer.Length, Length);
+            return true;
         }
 
         [CLSCompliant(false)]
@@ -74,7 +101,8 @@ namespace System {
 
         public ByteSpan Slice(int index)
         {
-            Precondition.Require(index < Length);
+            if (index >= Length)
+                return new ByteSpan(_data, 0);
 
             var data = _data + index;
             var length = _length - index;
