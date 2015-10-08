@@ -50,6 +50,15 @@ namespace System {
         }
 
         [CLSCompliant(false)]
+        public bool TryCopyTo(byte* value, int valueLength)
+        {
+            if (Length > valueLength)
+                return false;
+            BufferInternal.MemoryCopy(_data, value, valueLength, _length);
+            return true;
+        }
+
+        [CLSCompliant(false)]
         public unsafe byte* UnsafeBuffer
         {
             get { return _data; }
