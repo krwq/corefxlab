@@ -7,6 +7,7 @@ using System.Text.Utf16;
 
 namespace System.Text.Utf8
 {
+    // TODO: We should have separate enumerators for code points and code units. Utf8String should implement IEnumerable<Utf8CodeUnit>
     public partial struct Utf8String : IEnumerable<UnicodeCodePoint>, IEquatable<Utf8String>, IComparable<Utf8String> 
     {
         private ByteSpan _buffer;
@@ -99,6 +100,33 @@ namespace System.Text.Utf8
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        private Utf8CodeUnit GetCodeUnitAtPositionUnchecked(int i)
+        {
+            if (_bytes != null)
+            {
+                return (Utf8CodeUnit)_bytes[_index + i];
+            }
+            else
+            {
+                return (Utf8CodeUnit)_buffer[i];
+            }
+        }
+
+        public Utf8CodeUnit this[int i]
+        {
+            get
+            {
+                if (i < 0 || i >= Length)
+                {
+                    throw new ArgumentOutOfRangeException("i");
+                }
+                else
+                {
+                    return GetCodeUnitAtPositionUnchecked(i);
+                }
+            }
         }
 
         public static explicit operator Utf8String(string s)
@@ -302,6 +330,32 @@ namespace System.Text.Utf8
             }
 
             return false;
+        }
+
+        public bool StartsWith(UnicodeCodePoint codePoint)
+        {
+            Enumerator e = GetEnumerator();
+            if (!e.MoveNext())
+            {
+                return false;
+            }
+
+            return e.Current == codePoint;
+        }
+
+        public bool StartsWith(Utf8CodeUnit codeUnit)
+        {
+            if (Length == 0)
+            {
+                return false;
+            }
+
+            return GetCodeUnitAtPositionUnchecked(0) == codeUnit;
+        }
+
+        public bool StartsWith(Utf8String value)
+        {
+            return this.Substring(0, value.Length).Equals(value);
         }
     }
 }
