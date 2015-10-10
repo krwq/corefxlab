@@ -1,8 +1,6 @@
 ﻿using Microsoft.Net.Http.Server.Socket;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 using System.Text.Formatting;
 using System.Text.Utf8;
@@ -214,17 +212,18 @@ namespace System.Net.Http.Buffered
     {
         public static void Append<T>(this T formatter, Utf8String text) where T : IFormatter
         {
-            var bytes = text.CopyBytes();
-            int avaliable;
-            do
-            {
-                avaliable = formatter.FreeBuffer.Length;
-                formatter.ResizeBuffer();
-            }
-            while (avaliable < bytes.Length);
+            throw new NotImplementedException();
+            //var bytes = text.CopyBytes();
+            //int avaliable;
+            //do
+            //{
+            //    avaliable = formatter.FreeBuffer.Length;
+            //    formatter.ResizeBuffer();
+            //}
+            //while (avaliable < bytes.Length);
 
-            formatter.FreeBuffer.Set(bytes);
-            formatter.CommitBytes(bytes.Length);
+            //formatter.FreeBuffer.Set(bytes);
+            //formatter.CommitBytes(bytes.Length);
         }
     }
 }
