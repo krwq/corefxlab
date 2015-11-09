@@ -23,7 +23,7 @@ namespace System.Text.Utf8.Tests
                 return "null";
             }
 
-            Utf16LittleEndianCodePointEnumerable codePoints = new Utf16LittleEndianCodePointEnumerable(s);
+            StringCodePointEnumerable codePoints = new StringCodePointEnumerable(s);
             StringBuilder sb = new StringBuilder();
             sb.Append('"');
             foreach (var codePoint in codePoints)
@@ -320,10 +320,10 @@ namespace System.Text.Utf8.Tests
                 codePoints.Add(it.Current);
             }
 
-            Utf16LittleEndianCodePointEnumerable utf16CodePoints = new Utf16LittleEndianCodePointEnumerable(s);
+            StringCodePointEnumerable utf16CodePoints = new StringCodePointEnumerable(s);
             Assert.Equal(utf16CodePoints, codePoints);
 
-            Utf8String u8s2 = new Utf8String(codePoints);
+            Utf8String u8s2 = Utf8String.FromCodePoints(codePoints);
             Assert.Equal(u8s, u8s2);
             Assert.Equal(s, u8s2.ToString());
         }
@@ -339,10 +339,10 @@ namespace System.Text.Utf8.Tests
 
             codePoints.Reverse();
 
-            Utf16LittleEndianCodePointEnumerable utf16CodePoints = new Utf16LittleEndianCodePointEnumerable(s);
+            StringCodePointEnumerable utf16CodePoints = new StringCodePointEnumerable(s);
             Assert.Equal(utf16CodePoints, codePoints);
 
-            Utf8String u8s2 = new Utf8String(codePoints);
+            Utf8String u8s2 = Utf8String.FromCodePoints(codePoints);
             Assert.Equal(u8s, u8s2);
             Assert.Equal(s, u8s2.ToString());
         }

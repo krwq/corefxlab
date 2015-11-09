@@ -23,7 +23,7 @@ namespace System.Text.Utf8
             {
                 get
                 {
-                    return (Utf8CodeUnit)_enumerator.Current;
+                    return _enumerator.Current;
                 }
             }
 

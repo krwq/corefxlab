@@ -200,7 +200,7 @@ namespace System.Text.Utf8
             return 0;
         }
 
-        public static bool TryEncodeCodePoint(UnicodeCodePoint codePoint, Span<byte> buffer, out int numberOfCodeUnits)
+        public static bool TryEncodeCodePoint(UnicodeCodePoint codePoint, Span<Utf8CodeUnit> buffer, out int numberOfCodeUnits)
         {
             if (!UnicodeCodePoint.IsSupportedCodePoint(codePoint))
             {
@@ -215,28 +215,31 @@ namespace System.Text.Utf8
                 return false;
             }
 
-            switch (numberOfCodeUnits)
+            unchecked
             {
-                case 1:
-                    buffer[0] = (byte)(mask_0111_1111 & codePoint.Value);
-                    return true;
-                case 2:
-                    buffer[0] = (byte)(((codePoint.Value >> 6) & mask_0001_1111) | mask_1100_0000);
-                    buffer[1] = (byte)(((codePoint.Value >> 0) & mask_0011_1111) | mask_1000_0000);
-                    return true;
-                case 3:
-                    buffer[0] = (byte)(((codePoint.Value >> 12) & mask_0000_1111) | mask_1110_0000);
-                    buffer[1] = (byte)(((codePoint.Value >> 6) & mask_0011_1111) | mask_1000_0000);
-                    buffer[2] = (byte)(((codePoint.Value >> 0) & mask_0011_1111) | mask_1000_0000);
-                    return true;
-                case 4:
-                    buffer[0] = (byte)(((codePoint.Value >> 18) & mask_0000_0111) | mask_1111_0000);
-                    buffer[1] = (byte)(((codePoint.Value >> 12) & mask_0011_1111) | mask_1000_0000);
-                    buffer[2] = (byte)(((codePoint.Value >> 6) & mask_0011_1111) | mask_1000_0000);
-                    buffer[3] = (byte)(((codePoint.Value >> 0) & mask_0011_1111) | mask_1000_0000);
-                    return true;
-                default:
-                    return false;
+                switch (numberOfCodeUnits)
+                {
+                    case 1:
+                        buffer[0] = (Utf8CodeUnit)(byte)(mask_0111_1111 & codePoint.Value);
+                        return true;
+                    case 2:
+                        buffer[0] = (Utf8CodeUnit)(byte)(((codePoint.Value >> 6) & mask_0001_1111) | mask_1100_0000);
+                        buffer[1] = (Utf8CodeUnit)(byte)(((codePoint.Value >> 0) & mask_0011_1111) | mask_1000_0000);
+                        return true;
+                    case 3:
+                        buffer[0] = (Utf8CodeUnit)(byte)(((codePoint.Value >> 12) & mask_0000_1111) | mask_1110_0000);
+                        buffer[1] = (Utf8CodeUnit)(byte)(((codePoint.Value >> 6) & mask_0011_1111) | mask_1000_0000);
+                        buffer[2] = (Utf8CodeUnit)(byte)(((codePoint.Value >> 0) & mask_0011_1111) | mask_1000_0000);
+                        return true;
+                    case 4:
+                        buffer[0] = (Utf8CodeUnit)(byte)(((codePoint.Value >> 18) & mask_0000_0111) | mask_1111_0000);
+                        buffer[1] = (Utf8CodeUnit)(byte)(((codePoint.Value >> 12) & mask_0011_1111) | mask_1000_0000);
+                        buffer[2] = (Utf8CodeUnit)(byte)(((codePoint.Value >> 6) & mask_0011_1111) | mask_1000_0000);
+                        buffer[3] = (Utf8CodeUnit)(byte)(((codePoint.Value >> 0) & mask_0011_1111) | mask_1000_0000);
+                        return true;
+                    default:
+                        return false;
+                }
             }
         }
         #endregion

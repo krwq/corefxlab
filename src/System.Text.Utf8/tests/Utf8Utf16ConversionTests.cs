@@ -58,7 +58,7 @@ namespace System.Text.Utf8.Tests
         [Theory, MemberData("EnumerateAndEnsureCodePointsOfTheSameUtf8AndUtf16StringsAreTheSameTestCases")]
         public void EnumerateAndEnsureCodePointsOfTheSameUtf8AndUtf16StringsAreTheSame(string utf16String, Utf8String utf8String)
         {
-            var utf16StringCodePoints = new Utf16LittleEndianCodePointEnumerable(utf16String);
+            var utf16StringCodePoints = new StringCodePointEnumerable(utf16String);
 
             var utf16CodePointEnumerator = utf16StringCodePoints.GetEnumerator();
             var utf8CodePointEnumerator = utf8String.CodePoints.GetEnumerator();

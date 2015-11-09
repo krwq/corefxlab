@@ -23,9 +23,9 @@
   <ItemGroup>
     <Compile Include="System\Text\UnicodeConstants.cs" />
     <Compile Include="System\Text\UnicodeCodePoint.cs" />
-    <Compile Include="System\Text\Utf16\Utf16LittleEndianCodePointEnumerator.cs" />
+    <Compile Include="System\Text\Utf16\StringCodePointEnumerator.cs" />
     <Compile Include="System\Text\Utf16\Utf16LittleEndianEncoder.cs" />
-    <Compile Include="System\Text\Utf16\Utf16LittleEndianCodePointEnumerable.cs" />
+    <Compile Include="System\Text\Utf16\StringCodePointEnumerable.cs" />
     <Compile Include="System\Text\Utf8\Utf16LittleEndianStringExtensions.cs" />
     <Compile Include="System\Text\Utf8\Utf8CodeUnit.Char.cs" />
     <Compile Include="System\Text\Utf8\Utf8CodeUnit.cs" />

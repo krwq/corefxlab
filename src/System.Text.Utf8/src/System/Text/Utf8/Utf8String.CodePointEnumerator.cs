@@ -10,7 +10,7 @@ namespace System.Text.Utf8
     {
         public struct CodePointEnumerator : IEnumerator<UnicodeCodePoint>, IEnumerator
         {
-            private Span<Utf8CodeUnit> _buffer;
+            private readonly Span<Utf8CodeUnit> _buffer;
             private int _index;
             private int _currentLenCache;
             private const int ResetIndex = -UnicodeConstants.Utf8MaxCodeUnitsPerCodePoint - 1;
