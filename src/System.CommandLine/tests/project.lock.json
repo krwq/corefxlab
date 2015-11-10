@@ -1,5 +1,5 @@
 {
-  "locked": true,
+  "locked": false,
   "version": 2,
   "targets": {
     "DNXCore,Version=v5.0": {
@@ -15,14 +15,14 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23428": {
+      "System.Console/4.0.0-beta-23509": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
           "System.Runtime": "4.0.0"
         },
         "compile": {
-          "ref/dotnet5.1/System.Console.dll": {}
+          "ref/dotnet5.4/System.Console.dll": {}
         }
       },
       "System.Diagnostics.Debug/4.0.10": {
@@ -37,7 +37,7 @@
           "lib/DNXCore50/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-beta-23428": {
+      "System.Diagnostics.Tools/4.0.1-beta-23509": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -325,7 +325,7 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x86": {
-      "runtime.win7.System.Console/4.0.0-beta-23428": {
+      "runtime.win7.System.Console/4.0.0-beta-23509": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -357,14 +357,14 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23428": {
+      "System.Console/4.0.0-beta-23509": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
           "System.Runtime": "4.0.0"
         },
         "compile": {
-          "ref/dotnet5.1/System.Console.dll": {}
+          "ref/dotnet5.4/System.Console.dll": {}
         }
       },
       "System.Diagnostics.Debug/4.0.10": {
@@ -379,7 +379,7 @@
           "lib/DNXCore50/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-beta-23428": {
+      "System.Diagnostics.Tools/4.0.1-beta-23509": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -667,7 +667,7 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x64": {
-      "runtime.win7.System.Console/4.0.0-beta-23428": {
+      "runtime.win7.System.Console/4.0.0-beta-23509": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -699,14 +699,14 @@
           "lib/DNXCore50/System.Collections.dll": {}
         }
       },
-      "System.Console/4.0.0-beta-23428": {
+      "System.Console/4.0.0-beta-23509": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.0",
           "System.Runtime": "4.0.0"
         },
         "compile": {
-          "ref/dotnet5.1/System.Console.dll": {}
+          "ref/dotnet5.4/System.Console.dll": {}
         }
       },
       "System.Diagnostics.Debug/4.0.10": {
@@ -721,7 +721,7 @@
           "lib/DNXCore50/System.Diagnostics.Debug.dll": {}
         }
       },
-      "System.Diagnostics.Tools/4.0.1-beta-23428": {
+      "System.Diagnostics.Tools/4.0.1-beta-23509": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0"
@@ -1010,14 +1010,14 @@
     }
   },
   "libraries": {
-    "runtime.win7.System.Console/4.0.0-beta-23428": {
+    "runtime.win7.System.Console/4.0.0-beta-23509": {
       "type": "package",
       "serviceable": true,
-      "sha512": "2ltU5mv5Cxioq/BE+eiQYpMxSc4acekxvOLuIT9vI99RnNVxhz2QU9Y9pIePJ6cRUutTH9/Djq3LEe+Iq959Yg==",
+      "sha512": "ASEnMAJWxwQXnvppE7TNTDnCqlrhg7WmB+c7FqGAVSa5YCSpYognGDyomzWe2rfxLDpaM/AB1+TMqC/AAVzmqQ==",
       "files": [
         "ref/dotnet/_._",
-        "runtime.win7.System.Console.4.0.0-beta-23428.nupkg",
-        "runtime.win7.System.Console.4.0.0-beta-23428.nupkg.sha512",
+        "runtime.win7.System.Console.4.0.0-beta-23509.nupkg",
+        "runtime.win7.System.Console.4.0.0-beta-23509.nupkg.sha512",
         "runtime.win7.System.Console.nuspec",
         "runtimes/win7/lib/dotnet5.4/System.Console.dll",
         "runtimes/win7/lib/net/_._"
@@ -1057,35 +1057,35 @@
         "System.Collections.nuspec"
       ]
     },
-    "System.Console/4.0.0-beta-23428": {
+    "System.Console/4.0.0-beta-23509": {
       "type": "package",
       "serviceable": true,
-      "sha512": "tAAiXsiehvIY32bdjtoDiLC9aBoGh3PXpL5HU4/XmhO2tv2UTF3azBNUiZkIQKqDcg7RNf8H4QUmA2XoSb6wNQ==",
+      "sha512": "lKIu7kM7havqnOAnXWLNUg3s3iGjNN3oKeuJKNnhvOx+ty4ZUPS6OXldbyMrcz7yggE2SuQIjjbsHS9aINszzQ==",
       "files": [
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
         "lib/net46/System.Console.dll",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/dotnet5.1/de/System.Console.xml",
-        "ref/dotnet5.1/es/System.Console.xml",
-        "ref/dotnet5.1/fr/System.Console.xml",
-        "ref/dotnet5.1/it/System.Console.xml",
-        "ref/dotnet5.1/ja/System.Console.xml",
-        "ref/dotnet5.1/ko/System.Console.xml",
-        "ref/dotnet5.1/ru/System.Console.xml",
-        "ref/dotnet5.1/System.Console.dll",
-        "ref/dotnet5.1/System.Console.xml",
-        "ref/dotnet5.1/zh-hans/System.Console.xml",
-        "ref/dotnet5.1/zh-hant/System.Console.xml",
+        "ref/dotnet5.4/de/System.Console.xml",
+        "ref/dotnet5.4/es/System.Console.xml",
+        "ref/dotnet5.4/fr/System.Console.xml",
+        "ref/dotnet5.4/it/System.Console.xml",
+        "ref/dotnet5.4/ja/System.Console.xml",
+        "ref/dotnet5.4/ko/System.Console.xml",
+        "ref/dotnet5.4/ru/System.Console.xml",
+        "ref/dotnet5.4/System.Console.dll",
+        "ref/dotnet5.4/System.Console.xml",
+        "ref/dotnet5.4/zh-hans/System.Console.xml",
+        "ref/dotnet5.4/zh-hant/System.Console.xml",
         "ref/MonoAndroid10/_._",
         "ref/MonoTouch10/_._",
         "ref/net46/System.Console.dll",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtime.json",
-        "System.Console.4.0.0-beta-23428.nupkg",
-        "System.Console.4.0.0-beta-23428.nupkg.sha512",
+        "System.Console.4.0.0-beta-23509.nupkg",
+        "System.Console.4.0.0-beta-23509.nupkg.sha512",
         "System.Console.nuspec"
       ]
     },
@@ -1123,10 +1123,10 @@
         "System.Diagnostics.Debug.nuspec"
       ]
     },
-    "System.Diagnostics.Tools/4.0.1-beta-23428": {
+    "System.Diagnostics.Tools/4.0.1-beta-23509": {
       "type": "package",
       "serviceable": true,
-      "sha512": "1HUCZfP8shSX1BXmRWuxVuJVuPWp0nmB7PJnuGWcd8YTA+Te3S2jYUGG+bZmeLoNlguV936wLjhTAN51nOoGJQ==",
+      "sha512": "eg6CxmxhUIbZw9kDq90kg4UVyiwifs2uKg3w9DerlyxQGVxJDBsEbcxDjZG00NYE11cNrW96ZFfgaj4Sf026Aw==",
       "files": [
         "lib/DNXCore50/System.Diagnostics.Tools.dll",
         "lib/net45/_._",
@@ -1161,8 +1161,8 @@
         "ref/wp80/_._",
         "ref/wpa81/_._",
         "runtimes/win8-aot/lib/netcore50/System.Diagnostics.Tools.dll",
-        "System.Diagnostics.Tools.4.0.1-beta-23428.nupkg",
-        "System.Diagnostics.Tools.4.0.1-beta-23428.nupkg.sha512",
+        "System.Diagnostics.Tools.4.0.1-beta-23509.nupkg",
+        "System.Diagnostics.Tools.4.0.1-beta-23509.nupkg.sha512",
         "System.Diagnostics.Tools.nuspec"
       ]
     },
